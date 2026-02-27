@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primal Fear Dex - ARK Survival Evolved Companion</title>
+    <meta name="description" content="The ultimate companion app for Primal Fear mod in ARK: Survival Evolved. Real-time data extraction from Primal Fear Wiki.">
+    <meta name="keywords" content="ARK, Primal Fear, mod, creatures, items, calculator, wiki">
+    <meta name="author" content="Primal Fear Dex Team">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Primal Fear Dex - ARK Companion">
+    <meta property="og:description" content="Ultimate companion for Primal Fear mod">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="assets/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+</head>
+<body>
+    <!-- Loading State -->
+    <div id="loading-state" class="loading-state">
+        <div class="container">
+            <div class="text-center p-xl">
+                <div class="loading-logo">
+                    <div class="logo-icon">🦕</div>
+                    <h1>Primal Fear Dex</h1>
+                </div>
+                <div class="loading-spinner"></div>
+                <p class="loading-message">Initializing application...</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="loading-details">
+                    <small>Setting up core systems...</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Component -->
+    <header id="header-component" class="header">
+        <!-- Header will be rendered here -->
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="app-content" class="main-content">
+        <!-- App content will be rendered here -->
+    </main>
+
+    <!-- Footer Component -->
+    <footer id="footer-component" class="footer">
+        <!-- Footer will be rendered here -->
+    </footer>
+
+    <!-- Error Boundary -->
+    <div id="error-boundary" class="error-boundary" style="display: none;">
+        <div class="container">
+            <div class="text-center p-xl">
+                <h1 class="text-danger">🚨 Something went wrong</h1>
+                <p class="text-secondary">An unexpected error occurred. Please refresh the page.</p>
+                <button class="btn btn-primary" onclick="location.reload()">Refresh</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Error handling for script loading
+        window.addEventListener('error', function(e) {
+            console.error('Script loading error:', e);
+            if (e.filename && e.filename.includes('app.js')) {
+                document.getElementById('app-content').innerHTML = `
+                    <div class="critical-error">
+                        <div class="container">
+                            <div class="text-center p-xl">
+                                <h1 class="text-danger">❌ Critical Error</h1>
+                                <p class="text-secondary">Failed to load application. Please refresh the page.</p>
+                                <button class="btn btn-primary" onclick="location.reload()">Refresh</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+
+        // Global error handler
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+        });
+
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+            console.log(`Page load time: ${loadTime}ms`);
+        });
+    </script>
+
+    <!-- Core Systems (order matters!) -->
+    <script src="src/core/store.js"></script>
+    <script src="src/services/api.js"></script>
+    <script src="src/core/router.js"></script>
+    <script src="src/core/app.js"></script>
+    
+    <!-- Legacy Components (for compatibility) -->
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    
+    <!-- Initialize Application -->
+    <script>
+        // Application initialization
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Starting Primal Fear Dex v2.0...');
+            
+            try {
+                // Create and initialize app
+                window.app = new PrimalFearApp();
+                const success = await window.app.init();
+                
+                if (success) {
+                    console.log('✅ Primal Fear Dex ready!');
+                    
+                    // Initialize legacy components if available
+                    if (window.HeaderComponent) {
+                        const headerContainer = document.getElementById('header-component');
+                        if (headerContainer) {
+                            window.HeaderComponent.init?.(headerContainer);
+                        }
+                    }
+                    
+                    if (window.FooterComponent) {
+                        const footerContainer = document.getElementById('footer-component');
+                        if (footerContainer) {
+                            window.FooterComponent.init?.(footerContainer);
+                        }
+                    }
+                } else {
+                    console.error('❌ Application initialization failed');
+                }
+                
+            } catch (error) {
+                console.error('❌ Critical initialization error:', error);
+                
+                // Show error screen
+                const loadingState = document.getElementById('loading-state');
+                if (loadingState) {
+                    loadingState.innerHTML = `
+                        <div class="container">
+                            <div class="text-center p-xl">
+                                <h1 class="text-danger">🚨 Initialization Failed</h1>
+                                <p class="text-secondary">The application could not be started.</p>
+                                <div class="error-details">
+                                    <p>${error.message}</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="location.reload()">Try Again</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        });
+
+        // Global utilities
+        window.PrimalFearDex = {
+            navigate: (path) => window.app?.router?.navigate(path),
+            getState: () => window.app?.store?.getState(),
+            refresh: () => location.reload(),
+            debug: () => window.app?.showDebugInfo?.()
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primal Fear Dex - ARK Survival Evolved Companion</title>
+    <meta name="description" content="The ultimate companion app for Primal Fear mod in ARK: Survival Evolved. Real-time data extraction from Primal Fear Wiki.">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+    <!-- Header Component -->
+    <header id="header-component"></header>
+
+    <!-- Main Content Area -->
+    <main id="app-content">
+        <!-- Loading State -->
+        <div class="loading-state" id="loading-state">
+            <div class="container">
+                <div class="text-center p-xl">
+                    <div class="loading-spinner"></div>
+                    <h2 class="mt-lg">🔄 Initializing Primal Fear Dex...</h2>
+                    <p class="text-muted">Connecting to Primal Fear Wiki...</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Component -->
+    <footer id="footer-component"></footer>
+
+    <!-- Scripts -->
+    <script>
+        // Enhanced error handling and loading system
+        let loadingPhase = 'initializing';
+        let wikiExtractionStatus = 'pending';
+        
+        // Update loading UI
+        function updateLoadingUI(phase, message, progress = 0) {
+            loadingPhase = phase;
+            const loadingState = document.getElementById('loading-state');
+            const progressFill = document.getElementById('progress-fill');
+            
+            if (loadingState) {
+                loadingState.innerHTML = `
+                    <div class="container">
+                        <div class="text-center p-xl">
+                            <div class="loading-spinner"></div>
+                            <h2 class="mt-lg">${phase}</h2>
+                            <p class="text-muted">${message}</p>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (progressFill) {
+                progressFill.style.width = `${progress}%`;
+            }
+        }
+        
+        // Show error state
+        function showError(title, message, details = null) {
+            const appContent = document.getElementById('app-content');
+            if (appContent) {
+                appContent.innerHTML = `
+                    <div class="error-page">
+                        <div class="container">
+                            <div class="text-center p-xl">
+                                <h1 class="text-danger mb-lg">❌ ${title}</h1>
+                                <p class="text-secondary mb-xl">${message}</p>
+                                ${details ? `
+                                    <details class="text-left mb-xl">
+                                        <summary class="btn btn-outline">Technical Details</summary>
+                                        <pre class="bg-darker p-md rounded mt-md text-sm">${details}</pre>
+                                    </details>
+                                ` : ''}
+                                <div class="action-buttons">
+                                    <button class="btn btn-primary" onclick="location.reload()">
+                                        🔄 Reload Page
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="window.PrimalFearDex?.init()">
+                                        🚀 Retry Initialization
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Script loading with error handling
+        window.addEventListener('error', function(e) {
+            console.error('Script loading error:', e);
+            if (e.filename && e.filename.includes('utils.js')) {
+                showError('Critical Error', 'Failed to load core utilities. Please refresh the page.', e.error);
+            }
+        });
+    </script>
+
+    <!-- Load utilities first -->
+    <script src="assets/js/utils.js"></script>
+    
+    <!-- Load sample data as fallback -->
+    <script src="data/sample-data.js"></script>
+    
+    <!-- Load wiki extraction engine -->
+    <script src="assets/js/wiki-extractor.js"></script>
+    
+    <!-- Load data loader with wiki integration -->
+    <script src="assets/js/data-loader.js"></script>
+    
+    <!-- Load main application -->
+    <script src="assets/js/app.js"></script>
+    
+    <!-- Initialize application with wiki extraction -->
+    <script>
+        // Enhanced initialization with wiki extraction
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('📱 DOM loaded, starting enhanced initialization...');
+            
+            // Show initial loading state
+            updateLoadingUI('🔄 Initializing Primal Fear Dex...', 'Setting up core systems...', 10);
+            
+            try {
+                // Phase 1: Initialize wiki extraction
+                updateLoadingUI('🌐 Connecting to Primal Fear Wiki...', 'Establishing connection...', 20);
+                
+                if (window.WikiExtractor) {
+                    wikiExtractionStatus = await WikiExtractor.init();
+                    console.log('🌐 Wiki extraction status:', wikiExtractionStatus);
+                    
+                    if (wikiExtractionStatus) {
+                        updateLoadingUI('📊 Extracting Data from Wiki...', 'Pulling latest information...', 40);
+                    } else {
+                        updateLoadingUI('⚠️ Wiki Unavailable', 'Using sample data instead...', 60);
+                        console.warn('Wiki not accessible, will use sample data');
+                    }
+                } else {
+                    updateLoadingUI('⚠️ Wiki Extractor Not Found', 'Using sample data...', 60);
+                }
+                
+                // Phase 2: Initialize main application
+                updateLoadingUI('🚀 Launching Application...', 'Finalizing setup...', 70);
+                
+                if (window.PrimalFearDex) {
+                    await PrimalFearDex.init();
+                    
+                    // Phase 3: Complete initialization
+                    updateLoadingUI('✅ Ready!', 'Loading complete...', 100);
+                    
+                    // Hide loading state after a short delay
+                    setTimeout(() => {
+                        const loadingState = document.getElementById('loading-state');
+                        if (loadingState) {
+                            loadingState.style.display = 'none';
+                        }
+                        console.log('✅ Primal Fear Dex with Wiki Extraction ready!');
+                    }, 1000);
+                    
+                } else {
+                    throw new Error('PrimalFearDex not found');
+                }
+                
+            } catch (error) {
+                console.error('❌ Enhanced initialization failed:', error);
+                showError('Initialization Failed', 
+                    `Failed to initialize Primal Fear Dex: ${error.message}`,
+                    error.stack
+                );
+            }
+        });
+        
+        // Global error handler
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            
+            // Only show user-friendly errors for critical failures
+            if (e.error && e.error.message && !e.error.message.includes('Non-Error')) {
+                showError('Application Error', 
+                    'An unexpected error occurred. The application will attempt to continue.',
+                    e.error.stack
+                );
+            }
+        });
+        
+        // Unhandled promise rejection handler
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+            showError('Application Error', 
+                'A critical error occurred. Please refresh the page.',
+                e.reason?.stack || e.reason
+            );
+        });
+    </script>
+</body>
+</html>

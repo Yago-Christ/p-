@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primal Fear Dex - ARK Survival Evolved Companion</title>
+    <meta name="description" content="The ultimate companion app for Primal Fear mod in ARK: Survival Evolved. Taming calculators, creature stats, item database, and more.">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+    <!-- Header Component -->
+    <header id="header-component"></header>
+
+    <!-- Main Content Area -->
+    <main id="app-content">
+        <div class="container">
+            <div class="home-page">
+                <section class="hero-section">
+                    <h1 class="hero-title">Primal Fear Dex</h1>
+                    <p class="hero-subtitle">The Ultimate Companion for Primal Fear Mod</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">500+</div>
+                            <div class="stat-label">Creatures</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">1000+</div>
+                            <div class="stat-label">Items</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Bosses</div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="quick-access-grid">
+                    <div class="quick-access-card">
+                        <div class="quick-access-icon">🦕</div>
+                        <h3 class="quick-access-title">Creatures</h3>
+                        <p class="quick-access-description">Complete database of all Primal Fear creatures with stats, taming info, and more.</p>
+                        <a href="#creatures" class="btn btn-primary">Explore Creatures</a>
+                    </div>
+                    
+                    <div class="quick-access-card">
+                        <div class="quick-access-icon">⚔️</div>
+                        <h3 class="quick-access-title">Items</h3>
+                        <p class="quick-access-description">Weapons, armor, tools, and consumables with crafting requirements.</p>
+                        <a href="#items" class="btn btn-primary">Browse Items</a>
+                    </div>
+                    
+                    <div class="quick-access-card">
+                        <div class="quick-access-icon">🧮</div>
+                        <h3 class="quick-access-title">Calculators</h3>
+                        <p class="quick-access-description">Advanced calculators for taming, breeding, stats, and more.</p>
+                        <a href="#calculators" class="btn btn-primary">Use Calculators</a>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Component -->
+    <footer id="footer-component"></footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/utils.js"></script>
+    <script src="data/sample-data.js"></script>
+    <script>
+        // Simple initialization for testing
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Primal Fear Dex loaded successfully!');
+            
+            // Simple header
+            const header = document.getElementById('header-component');
+            if (header) {
+                header.innerHTML = `
+                    <div class="header">
+                        <div class="container">
+                            <div class="header-content">
+                                <a href="/" class="logo">
+                                    <div class="logo-icon">🦕</div>
+                                    <span>Primal Fear Dex</span>
+                                </a>
+                                
+                                <div class="search-container">
+                                    <div class="search-icon">🔍</div>
+                                    <input type="text" class="search-input" placeholder="Search creatures, items...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Simple footer
+            const footer = document.getElementById('footer-component');
+            if (footer) {
+                footer.innerHTML = `
+                    <div class="footer">
+                        <div class="container">
+                            <div class="footer-bottom">
+                                <p>&copy; 2024 Primal Fear Dex. Not affiliated with ARK or Primal Fear mod.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
